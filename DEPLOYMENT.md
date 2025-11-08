@@ -27,8 +27,18 @@ USE_MOCK_CRAWLER=False
 ```
 
 ### 4. 데이터베이스 연결
+
+두 가지 옵션:
+
+#### 옵션 A: Supabase PostgreSQL (권장)
+- [Supabase 가이드](SUPABASE_SETUP.md) 참조
+- 무료 티어: 500MB, 자동 백업
+- Connection Pooling 지원
+
+#### 옵션 B: Render PostgreSQL
 - Render PostgreSQL 무료 플랜 생성
 - `DATABASE_URL` 자동 설정됨
+- 무료 티어: 1GB, 90일 후 삭제
 
 ### 5. 배포
 - `master` 브랜치에 푸시하면 자동 배포

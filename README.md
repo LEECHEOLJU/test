@@ -31,8 +31,10 @@ python app_v2.py
 ## 📚 문서
 
 - [DEPLOYMENT.md](DEPLOYMENT.md) - 배포 가이드
+- [SUPABASE_SETUP.md](SUPABASE_SETUP.md) - Supabase 연동 가이드
 - [API.md](API.md) - API 문서
 - [PRD.md](PRD.md) - 프로젝트 요구사항
+- [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) - 프로젝트 개요
 
 ## 🐳 Docker
 
