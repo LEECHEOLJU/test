@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block title %}CGV IMAX 예매 알림 - 대시보드{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto" x-data="dashboard()">
+    <!-- 헤더 -->
+    <div class="mb-8 animate-slide-up">
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">📊 대시보드</h2>
+        <p class="text-gray-600 dark:text-gray-400">모니터링 통계 및 히스토리</p>
+    </div>
+
+    <!-- 통계 카드 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- 총 영화 수 -->
+        <div class="card animate-slide-up" style="animation-delay: 0.1s">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">총 영화</p>
+                    <p class="text-3xl font-bold text-gray-800 dark:text-white" x-text="stats.total_movies"></p>
+                </div>
+                <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모니터링 중인 영화 -->
+        <div class="card animate-slide-up" style="animation-delay: 0.2s">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">모니터링 중</p>
+                    <p class="text-3xl font-bold text-purple-600 dark:text-purple-400" x-text="stats.monitored_movies"></p>
+                </div>
+                <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 총 알림 수 -->
+        <div class="card animate-slide-up" style="animation-delay: 0.3s">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">총 알림</p>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-400" x-text="stats.total_notifications"></p>
+                </div>
+                <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 성공률 -->
+        <div class="card animate-slide-up" style="animation-delay: 0.4s">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">성공률</p>
+                    <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400" x-text="stats.success_rate + '%'"></p>
+                </div>
+                <div class="bg-yellow-100 dark:bg-yellow-900 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 차트 섹션 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- 알림 추세 -->
+        <div class="card animate-slide-up" style="animation-delay: 0.5s">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">알림 추세</h3>
+            <canvas id="notificationChart"></canvas>
+        </div>
+
+        <!-- 영화별 알림 수 -->
+        <div class="card animate-slide-up" style="animation-delay: 0.6s">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">영화별 알림 수</h3>
+            <canvas id="movieChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 알림 히스토리 -->
+    <div class="card animate-slide-up" style="animation-delay: 0.7s">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">알림 히스토리</h3>
+            <div class="flex items-center space-x-2">
+                <select
+                    x-model="perPage"
+                    @change="loadNotifications()"
+                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                    <option value="10">10개씩</option>
+                    <option value="20">20개씩</option>
+                    <option value="50">50개�option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 테이블 -->
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">영화 제목</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">알림 유형</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">상태</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">전송 시각</th>
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-gray-600 dark:text-gray-400">링크</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="notification in notifications" :key="notification.id">
+                        <tr class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                            <td class="py-3 px-4 text-gray-800 dark:text-white font-medium" x-text="notification.movie_title"></td>
+                            <td class="py-3 px-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium"
+                                    :class="{
+                                        'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': notification.notification_type === 'email',
+                                        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': notification.notification_type === 'telegram',
+                                        'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': notification.notification_type === 'discord'
+                                    }"
+                                    x-text="notification.notification_type">
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="inline-flex items-center"
+                                    :class="notification.success ? 'text-green-600' : 'text-red-600'">
+                                    <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path x-show="notification.success" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        <path x-show="!notification.success" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span x-text="notification.success ? '성공' : '실패'"></span>
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-gray-600 dark:text-gray-400 text-sm" x-text="formatDate(notification.sent_at)"></td>
+                            <td class="py-3 px-4">
+                                <a :href="notification.booking_url" target="_blank" class="text-purple-600 hover:text-purple-700 text-sm font-medium">
+                                    예매하기
+                                </a>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+
+            <!-- 빈 상태 -->
+            <div x-show="notifications.length === 0" class="text-center py-12">
+                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+                <p class="text-gray-600 dark:text-gray-400">알림 내역이 없습니다</p>
+            </div>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div x-show="totalPages > 1" class="flex items-center justify-between mt-6">
+            <div class="text-sm text-gray-600 dark:text-gray-400">
+                총 <span x-text="totalNotifications"></span>개 중 <span x-text="(currentPage - 1) * perPage + 1"></span>-<span x-text="Math.min(currentPage * perPage, totalNotifications)"></span>개
+            </div>
+            <div class="flex space-x-2">
+                <button
+                    @click="changePage(currentPage - 1)"
+                    :disabled="currentPage === 1"
+                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                    이전
+                </button>
+                <template x-for="page in pageNumbers" :key="page">
+                    <button
+                        @click="changePage(page)"
+                        :class="page === currentPage ? 'bg-purple-600 text-white' : 'border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                        class="px-4 py-2 rounded-lg"
+                        x-text="page">
+                    </button>
+                </template>
+                <button
+                    @click="changePage(currentPage + 1)"
+                    :disabled="currentPage === totalPages"
+                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                    다음
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 크롤링 로그 -->
+    <div class="card animate-slide-up mt-8" style="animation-delay: 0.8s">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">최근 크롤링 로그</h3>
+        <div class="space-y-2 max-h-96 overflow-y-auto">
+            <template x-for="log in stats.recent_logs" :key="log.id">
+                <div class="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm">
+                    <div class="flex-shrink-0 mt-1">
+                        <svg class="w-5 h-5" :class="log.error_message ? 'text-red-500' : 'text-green-500'" fill="currentColor" viewBox="0 0 20 20">
+                            <circle cx="10" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-800 dark:text-white" x-text="log.movie_title || '전체 영화'"></p>
+                        <p class="text-gray-600 dark:text-gray-400" x-text="formatDate(log.checked_at)"></p>
+                        <p x-show="log.error_message" class="text-red-600 mt-1" x-text="log.error_message"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function dashboard() {
+    return {
+        stats: {
+            total_movies: 0,
+            monitored_movies: 0,
+            total_notifications: 0,
+            success_rate: 0,
+            recent_logs: []
+        },
+        notifications: [],
+        currentPage: 1,
+        perPage: 20,
+        totalPages: 1,
+        totalNotifications: 0,
+
+        init() {
+            this.loadStats();
+            this.loadNotifications();
+        },
+
+        async loadStats() {
+            try {
+                const response = await fetch('/api/v2/stats');
+                const data = await response.json();
+                if (data.success) {
+                    this.stats = data.stats;
+                    this.$nextTick(() => {
+                        this.initCharts();
+                    });
+                }
+            } catch (error) {
+                console.error('통계 로드 실패:', error);
+                showToast('통계를 불러올 수 없습니다', 'error');
+            }
+        },
+
+        async loadNotifications() {
+            try {
+                const response = await fetch(`/api/v2/notifications?page=${this.currentPage}&per_page=${this.perPage}`);
+                const data = await response.json();
+                if (data.success) {
+                    this.notifications = data.notifications;
+                    this.totalPages = data.pages;
+                    this.totalNotifications = data.total;
+                }
+            } catch (error) {
+                console.error('알림 로드 실패:', error);
+                showToast('알림 내역을 불러올 수 없습니다', 'error');
+            }
+        },
+
+        changePage(page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+                this.loadNotifications();
+            }
+        },
+
+        get pageNumbers() {
+            const pages = [];
+            const maxPages = 5;
+            let start = Math.max(1, this.currentPage - Math.floor(maxPages / 2));
+            let end = Math.min(this.totalPages, start + maxPages - 1);
+
+            if (end - start < maxPages - 1) {
+                start = Math.max(1, end - maxPages + 1);
+            }
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
+        },
+
+        initCharts() {
+            // 알림 추세 차트
+            const notificationCtx = document.getElementById('notificationChart');
+            if (notificationCtx) {
+                new Chart(notificationCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['월', '화', '수', '목', '금', '토', '일'],
+                        datasets: [{
+                            label: '알림 수',
+                            data: [12, 19, 15, 25, 22, 30, 28],
+                            borderColor: 'rgb(147, 51, 234)',
+                            backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 영화별 알림 차트
+            const movieCtx = document.getElementById('movieChart');
+            if (movieCtx) {
+                new Chart(movieCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['듄: 파트 2', '오펜하이머', '인터스텔라', '기타'],
+                        datasets: [{
+                            data: [45, 30, 15, 10],
+                            backgroundColor: [
+                                'rgb(147, 51, 234)',
+                                'rgb(59, 130, 246)',
+                                'rgb(16, 185, 129)',
+                                'rgb(251, 146, 60)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true
+                    }
+                });
+            }
+        },
+
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('ko-KR');
+        }
+    }
+}
+</script>
+{% endblock %}

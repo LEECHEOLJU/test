@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}CGV IMAX 예매 알림 - 설정{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto" x-data="settings()">
+    <!-- 헤더 -->
+    <div class="mb-8 animate-slide-up">
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">⚙️ 설정</h2>
+        <p class="text-gray-600 dark:text-gray-400">알림 및 애플리케이션 설정을 관리합니다</p>
+    </div>
+
+    <!-- 테마 설정 -->
+    <div class="card mb-6 animate-slide-up" style="animation-delay: 0.1s">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">🎨 테마</h3>
+        <div class="flex items-center space-x-4">
+            <label class="flex items-center space-x-2 cursor-pointer">
+                <input
+                    type="radio"
+                    name="theme"
+                    value="light"
+                    x-model="preferences.theme"
+                    @change="updateTheme()"
+                    class="w-4 h-4 text-purple-600">
+                <span class="text-gray-800 dark:text-white">라이트 모드</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer">
+                <input
+                    type="radio"
+                    name="theme"
+                    value="dark"
+                    x-model="preferences.theme"
+                    @change="updateTheme()"
+                    class="w-4 h-4 text-purple-600">
+                <span class="text-gray-800 dark:text-white">다크 모드</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer">
+                <input
+                    type="radio"
+                    name="theme"
+                    value="auto"
+                    x-model="preferences.theme"
+                    @change="updateTheme()"
+                    class="w-4 h-4 text-purple-600">
+                <span class="text-gray-800 dark:text-white">시스템 설정</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- 알림 채널 설정 -->
+    <div class="card mb-6 animate-slide-up" style="animation-delay: 0.2s">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">📧 알림 채널</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">예매 오픈 시 알림을 받을 채널을 선택하세요</p>
+
+        <div class="space-y-3">
+            <label class="flex items-center space-x-3 p-4 border-2 rounded-lg cursor-pointer transition"
+                :class="preferences.notification_channels.includes('email') ? 'border-purple-500 bg-purple-50 dark:bg-purple-900 dark:bg-opacity-20' : 'border-gray-200 dark:border-gray-700'">
+                <input
+                    type="checkbox"
+                    value="email"
+                    x-model="preferences.notification_channels"
+                    class="w-5 h-5 text-purple-600 rounded">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="font-semibold text-gray-800 dark:text-white">이메일</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Gmail로 알림을 받습니다</p>
+                </div>
+            </label>
+
+            <label class="flex items-center space-x-3 p-4 border-2 rounded-lg cursor-pointer transition"
+                :class="preferences.notification_channels.includes('telegram') ? 'border-purple-500 bg-purple-50 dark:bg-purple-900 dark:bg-opacity-20' : 'border-gray-200 dark:border-gray-700'">
+                <input
+                    type="checkbox"
+                    value="telegram"
+                    x-model="preferences.notification_channels"
+                    class="w-5 h-5 text-purple-600 rounded">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161l-1.756 8.272c-.132.593-.473.741-.958.461l-2.652-1.953-1.279 1.231c-.141.141-.261.261-.535.261l.191-2.705 4.938-4.461c.214-.191-.047-.297-.332-.106l-6.105 3.847-2.63-.822c-.571-.179-.582-.571.119-.846l10.285-3.966c.476-.179.892.106.739.846z"></path>
+                        </svg>
+                        <span class="font-semibold text-gray-800 dark:text-white">텔레그램</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">텔레그램 봇으로 즉시 알림을 받습니다</p>
+                </div>
+            </label>
+
+            <label class="flex items-center space-x-3 p-4 border-2 rounded-lg cursor-pointer transition"
+                :class="preferences.notification_channels.includes('discord') ? 'border-purple-500 bg-purple-50 dark:bg-purple-900 dark:bg-opacity-20' : 'border-gray-200 dark:border-gray-700'">
+                <input
+                    type="checkbox"
+                    value="discord"
+                    x-model="preferences.notification_channels"
+                    class="w-5 h-5 text-purple-600 rounded">
+                <div class="flex-1">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"></path>
+                        </svg>
+                        <span class="font-semibold text-gray-800 dark:text-white">디스코드</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">디스코드 웹훅으로 알림을 받습니다</p>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <!-- 이메일 수신자 설정 -->
+    <div class="card mb-6 animate-slide-up" style="animation-delay: 0.3s">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">📬 이메일 수신자</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">알림을 받을 이메일 주소를 입력하세요 (여러 개 가능)</p>
+
+        <div class="space-y-3">
+            <template x-for="(email, index) in preferences.email_addresses" :key="index">
+                <div class="flex items-center space-x-2">
+                    <input
+                        type="email"
+                        x-model="preferences.email_addresses[index]"
+                        placeholder="example@gmail.com"
+                        class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <button
+                        @click="removeEmail(index)"
+                        class="p-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 dark:hover:bg-opacity-20 rounded-lg transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </template>
+
+            <button
+                @click="addEmail()"
+                class="w-full py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-purple-500 hover:text-purple-500 transition">
+                + 이메일 추가
+            </button>
+        </div>
+
+        <!-- 테스트 이메일 -->
+        <div class="mt-6">
+            <button
+                @click="sendTestEmail()"
+                :disabled="testEmailSending"
+                class="btn-secondary disabled:opacity-50">
+                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"></path>
+                </svg>
+                <span x-text="testEmailSending ? '전송 중...' : '테스트 이메일 발송'"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 모니터링 설정 -->
+    <div class="card mb-6 animate-slide-up" style="animation-delay: 0.4s">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">⏱️ 모니터링 설정</h3>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
+                    체크 주기 (초)
+                </label>
+                <div class="flex items-center space-x-4">
+                    <input
+                        type="range"
+                        min="60"
+                        max="600"
+                        step="30"
+                        x-model="preferences.check_interval"
+                        class="flex-1">
+                    <span class="text-2xl font-bold text-purple-600 dark:text-purple-400 w-20 text-right" x-text="preferences.check_interval + 's'"></span>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    CGV 서버 부하를 고려하여 최소 60초 이상으로 설정해주세요
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 저장 버튼 -->
+    <div class="flex justify-end space-x-4 animate-slide-up" style="animation-delay: 0.5s">
+        <button
+            @click="resetSettings()"
+            class="btn-secondary">
+            초기화
+        </button>
+        <button
+            @click="saveSettings()"
+            :disabled="saving"
+            class="btn-primary disabled:opacity-50">
+            <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span x-text="saving ? '저장 중...' : '설정 저장'"></span>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function settings() {
+    return {
+        preferences: {
+            theme: 'auto',
+            notification_channels: ['email'],
+            email_addresses: [''],
+            check_interval: 180
+        },
+        saving: false,
+        testEmailSending: false,
+
+        init() {
+            this.loadPreferences();
+        },
+
+        async loadPreferences() {
+            try {
+                const response = await fetch('/api/v2/preferences');
+                const data = await response.json();
+                if (data.success) {
+                    this.preferences = data.preferences;
+                    if (!this.preferences.email_addresses || this.preferences.email_addresses.length === 0) {
+                        this.preferences.email_addresses = [''];
+                    }
+                }
+            } catch (error) {
+                console.error('설정 로드 실패:', error);
+                showToast('설정을 불러올 수 없습니다', 'error');
+            }
+        },
+
+        async saveSettings() {
+            // 빈 이메일 제거
+            this.preferences.email_addresses = this.preferences.email_addresses.filter(email => email.trim());
+
+            if (this.preferences.email_addresses.length === 0) {
+                showToast('최소 하나의 이메일 주소를 입력해주세요', 'warning');
+                return;
+            }
+
+            this.saving = true;
+            try {
+                const response = await fetch('/api/v2/preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.preferences)
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('설정이 저장되었습니다', 'success');
+                    this.applyTheme();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                console.error('설정 저장 실패:', error);
+                showToast('설정 저장에 실패했습니다', 'error');
+            } finally {
+                this.saving = false;
+            }
+        },
+
+        async sendTestEmail() {
+            if (!this.preferences.email_addresses.some(email => email.trim())) {
+                showToast('이메일 주소를 먼저 입력해주세요', 'warning');
+                return;
+            }
+
+            this.testEmailSending = true;
+            try {
+                const response = await fetch('/api/v2/test-notification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        channels: ['email'],
+                        email_addresses: this.preferences.email_addresses.filter(e => e.trim())
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('테스트 이메일이 발송되었습니다', 'success');
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                console.error('테스트 이메일 발송 실패:', error);
+                showToast('테스트 이메일 발송에 실패했습니다', 'error');
+            } finally {
+                this.testEmailSending = false;
+            }
+        },
+
+        addEmail() {
+            this.preferences.email_addresses.push('');
+        },
+
+        removeEmail(index) {
+            if (this.preferences.email_addresses.length > 1) {
+                this.preferences.email_addresses.splice(index, 1);
+            } else {
+                showToast('최소 하나의 이메일 주소가 필요합니다', 'warning');
+            }
+        },
+
+        updateTheme() {
+            this.applyTheme();
+        },
+
+        applyTheme() {
+            if (this.preferences.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            } else if (this.preferences.theme === 'light') {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                localStorage.removeItem('theme');
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        },
+
+        async resetSettings() {
+            if (confirm('설정을 초기화하시겠습니까?')) {
+                this.preferences = {
+                    theme: 'auto',
+                    notification_channels: ['email'],
+                    email_addresses: [''],
+                    check_interval: 180
+                };
+                await this.saveSettings();
+            }
+        }
+    }
+}
+</script>
+{% endblock %}
