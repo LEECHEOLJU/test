@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGV 용산 IMAX 예매 알림</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container py-5">
+        <!-- 헤더 -->
+        <header class="text-center mb-5">
+            <h1 class="display-4"><i class="bi bi-camera-reels"></i> CGV 용산 IMAX 예매 알림</h1>
+            <p class="text-muted" id="current-time"></p>
+        </header>
+
+        <!-- 섹션 1: 감시 상태 -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-eye"></i> 감시 상태</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>감시 중인 영화:</strong> <span id="monitoring-movie" class="text-primary">없음</span></p>
+                        <p><strong>상태:</strong> <span id="monitoring-status" class="badge bg-secondary">중지됨</span></p>
+                        <p><strong>마지막 체크:</strong> <span id="last-check-time" class="text-muted">-</span></p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <button id="btn-start-monitoring" class="btn btn-success btn-lg me-2" onclick="startMonitoring()">
+                            <i class="bi bi-play-circle"></i> 감시 시작
+                        </button>
+                        <button id="btn-stop-monitoring" class="btn btn-danger btn-lg" onclick="stopMonitoring()" disabled>
+                            <i class="bi bi-stop-circle"></i> 감시 중지
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 섹션 2: 영화 선택 -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-film"></i> 영화 선택</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <button class="btn btn-outline-info" onclick="loadMovies()">
+                        <i class="bi bi-arrow-clockwise"></i> 영화 목록 새로고침
+                    </button>
+                </div>
+                <div id="movies-list" class="mb-3">
+                    <p class="text-muted">영화 목록을 불러오는 중...</p>
+                </div>
+                <button class="btn btn-primary" onclick="selectMovie()">
+                    <i class="bi bi-check-circle"></i> 선택 저장
+                </button>
+            </div>
+        </div>
+
+        <!-- 섹션 3: 이메일 설정 -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-envelope"></i> 이메일 설정</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="email-input" class="form-label">이메일 주소</label>
+                    <div class="input-group">
+                        <input type="email" class="form-control" id="email-input" placeholder="example@email.com">
+                        <button class="btn btn-outline-secondary" onclick="addEmail()">
+                            <i class="bi bi-plus-circle"></i> 추가
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">등록된 이메일 목록</label>
+                    <div id="email-list" class="border rounded p-3 bg-light">
+                        <p class="text-muted mb-0">등록된 이메일이 없습니다.</p>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success" onclick="saveEmails()">
+                        <i class="bi bi-save"></i> 저장
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="sendTestEmail()">
+                        <i class="bi bi-send"></i> 테스트 이메일 발송
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 섹션 4: 최근 알림 -->
+        <div class="card mb-4 shadow-sm" id="notification-card" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-bell"></i> 최근 알림</h5>
+            </div>
+            <div class="card-body">
+                <div id="notification-content" class="alert alert-success">
+                    <p class="mb-2"><strong>알림 내용이 여기 표시됩니다.</strong></p>
+                    <a href="#" id="booking-link" class="btn btn-success" target="_blank">
+                        <i class="bi bi-ticket"></i> 예매하러 가기
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 토스트 알림 -->
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="toast" class="toast" role="alert">
+                <div class="toast-header">
+                    <strong class="me-auto">알림</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body" id="toast-body">
+                    메시지
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
