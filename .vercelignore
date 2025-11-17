@@ -1,0 +1,69 @@
+# Vercel 배포 시 제외할 파일 및 폴더
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 환경변수 및 설정
+.env
+.env.local
+.env.*.local
+*.db
+*.sqlite
+*.sqlite3
+cgv_alert.db
+
+# 로그
+*.log
+cgv_alert.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 개발용 파일
+app_old.py
+app_v2_backup.py
+test/
+tests/
+*.test.py
+
+# Docker (Vercel에서는 불필요)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# 문서 (필요시 제외 해제)
+# *.md
+
+# Git
+.git/
+.gitignore
